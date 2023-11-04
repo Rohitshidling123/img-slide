@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    /* Styles for the image slider */
+    .slider-container {
+      width: 300px;
+      overflow: hidden;
+    }
+
+    .slider {
+      display: flex;
+      transition: transform 0.5s;
+    }
+
+    .slide {
+      width: 300px;
+      height: 200px;
+      flex-shrink: 0;
+      cursor: grab;
+    }
+  </style>
+</head>
+<body>
+  <div class="slider-container">
+    <div class="slider" onmousemove="drag(event)" onmouseup="endDrag()">
+      <div class="slide" onmousedown="startDrag(event)"><img src="IMAGE.png" alt="Image 1"></div>
+      <div class="slide" onmousedown="startDrag(event)"><img src="2image.jfif" alt="Image 2"></div>
+      <div class="slide" onmousedown="startDrag(event)"><img src="now.jpg" alt="Image 3"></div>
+    </div>
+  </div>
+
+  <script>
+    // JavaScript for the image slider
+    const slider = document.querySelector('.slider');
+    const slides = document.querySelectorAll('.slide');
+    let currentIndex = 0;
+    let startX = 0;
+    let isDragging = false;
+
+    function updateSlider() {
+      slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+    }
+
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % slides.length;
+      updateSlider();
+    }
+
+    function previousSlide() {
+      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+      updateSlider();
+    }
+
+    function startDrag(event) {
+      isDragging = true;
+      startX = event.clientX;
+    }
+
+    function drag(event) {
+      if (!isDragging) return;
+      const currentX = event.clientX;
+      const diffX = currentX - startX;
+      if (diffX > 10) {
+        previousSlide(); // Dragging to the right should move the image to the left
+        isDragging = false;
+      } else if (diffX < -10) {
+        nextSlide(); // Dragging to the left should move the image to the right
+        isDragging = false;
+      }
+      updateSlider();
+    }
+
+    function endDrag() {
+      isDragging = false;
+      updateSlider();
+    }
+
+    setInterval(nextSlide, 5000); // Auto-slide every 3 seconds
+  </script>
+</body>
+</html>
